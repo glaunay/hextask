@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "allowJs" : true,
+        "listEmittedFiles" : true,
+        "listFiles" : false,
+        "maxNodeModuleJsDepth" : 10,
+        "module": "commonjs",
+        "moduleResolution" : "node",
+        "outDir" : "./",
+        "preserveConstEnums" : true,
+        "removeComments" : false,
+        "target": "ES6",
+        "types" : [],
+        "typeRoots" : ["./typings" ]
+    },
+    "files": [ // path to the files to compile
+        "./ts/src/index.ts",
+        "./ts/src/test/test.ts"
+    ]
+}

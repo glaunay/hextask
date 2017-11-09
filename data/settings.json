@@ -1,0 +1,5 @@
+{
+	"coreScript" : "./data/run_hex.sh",
+	"automaticClosure" : false,
+	"settings" : {}
+}

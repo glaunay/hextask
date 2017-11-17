@@ -27,8 +27,6 @@ import tk = require('taskObject');
 
 declare var __dirname;
 
-var b_test = false; // test mode
-
 export class Hex extends tk.Task {
 	/*
 	* Initialize the task parameters.

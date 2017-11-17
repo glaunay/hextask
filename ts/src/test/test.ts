@@ -116,10 +116,10 @@ var hexTest = function (probe) {
     pdbLib.parse({ 'file' : entryFile}).on('end', function (pdbObj) {
         pdbObj.stream(true, "targetPdbFile").pipe(h);
         //process.stdin.pipe(h);
-        h.on('processed', function (s) {
+        h.on('processed', function (results) {
             console.log('**** data H');
         })
-        .on('err', function (s) {
+        .on('err', function (err, jobID) {
             console.log('**** ERROR H');
         })
         //.pipe(process.stdout);

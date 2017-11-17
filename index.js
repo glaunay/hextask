@@ -21,7 +21,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // - npm
 // - prepareResults
 const tk = require("taskObject");
-var b_test = false; // test mode
 class Hex extends tk.Task {
     /*
     * Initialize the task parameters.

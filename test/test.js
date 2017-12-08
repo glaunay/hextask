@@ -98,13 +98,17 @@ jobManager.on('ready', function () {
 var hexTest = function (probe) {
     var jobProfile = "arwen_hex_" + ncpu + "cpu"; // "arwen_hex_16cpu" for example
     var syncMode = false;
+    let management = {
+        'jobManager': jobManager,
+        'jobProfile': jobProfile
+    };
     var options = {
         'staticInputs': { 'probePdbFile': probe },
         'modules': ['naccess', 'hex'],
         'exportVar': { 'hexFlags': ' -nocuda -ncpu ' + ncpu + ' ',
             'hexScript': '/software/mobi/hex/8.1.1/exe/hex8.1.1.x64' }
     };
-    var h = new hexT.Hex(jobManager, jobProfile, syncMode, options);
+    var h = new hexT.Hex(management, syncMode, options);
     //h.testMode(true);
     pdbLib.parse({ 'file': entryFile }).on('end', function (pdbObj) {
         pdbObj.stream(true, "targetPdbFile").pipe(h);

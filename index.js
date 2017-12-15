@@ -19,7 +19,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // TODO
 // - doc
 // - npm
-// - prepareResults
 const tk = require("taskObject");
 class Hex extends tk.Task {
     /*

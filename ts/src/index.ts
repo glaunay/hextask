@@ -20,7 +20,6 @@ The output is a literal with this form :
 // TODO
 // - doc
 // - npm
-// - prepareResults
 
 
 import tk = require('taskObject');

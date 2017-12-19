@@ -22,7 +22,7 @@ The output is a literal with this form :
 // - npm
 
 
-import tk = require('taskObject');
+import tk = require('taskobject');
 
 declare var __dirname;
 

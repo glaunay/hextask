@@ -128,18 +128,18 @@ try {
 catch (err) {
     throw err;
 }
+engineType = engineType ? engineType : bean.engineType;
+bean.cacheDir = cacheDir ? cacheDir : bean.cacheDir;
 // console.log("Config file content:\n");
 // console.dir(bean);
+optCacheDir.push(bean.cacheDir);
 ///////////// management /////////////
 slurmOptions = {
-    'cacheDir': null,
+    'cacheDir': bean.cacheDir,
     'tcp': tcp,
     'port': port
 };
 ///////////// jobManager /////////////
-bean.cacheDir = cacheDir ? cacheDir : bean.cacheDir;
-slurmOptions['cacheDir'] = bean.cacheDir;
-optCacheDir.push(bean.cacheDir);
 let jobProfile = "arwen_hex_" + ncpu + "cpu"; // "arwen_hex_16cpu" for example
 let management = {
     'jobManager': jobManager,

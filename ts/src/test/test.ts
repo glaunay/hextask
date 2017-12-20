@@ -11,6 +11,7 @@ node path/to/this/script/test.js -cache /path/to/cache/tmp/
 
 import hexT = require ('../index');
 import localIP = require ('my-local-ip');
+import jobManager = require ('nslurm'); // engineLayer branch
 import jsonfile = require ('jsonfile');
 import fs = require ('fs');
 import stream = require ('stream');
@@ -26,7 +27,6 @@ var engineType: string = null,
     probeFile: string = null,
     ncpu: string = null,
     b_index: boolean = false,
-    b_emul: boolean = false,
     slurmOptions: {} = null;
 var optCacheDir: string[] = [];
 
@@ -45,7 +45,6 @@ var usage = function (): void {
     str += '    -probe [PATH_TO_YOUR_PROBE_FILE]\n';
     str += '    -ncpu [NUMBER OF CPUS NEEDED]\n';
     str += '    --index, to allow indexation of the cache directory of nslurm [optional]\n';
-    str += '    --emul, to run the test without any job manager [optional]\n\n';
     str += 'EXAMPLE :\n';
     str += 'node test/test.js\n';
     str += '    -cache /home/mgarnier/tmp/\n';
@@ -133,14 +132,13 @@ process.argv.forEach(function (val, index, array) {
     if (val === '--index') {
         b_index = true;
     }
-    if (val === '--emul') {
-        b_emul = true;
-    }
 });
 
 if (! inputFile) throw 'No PDB file specified ! Usage : ' + usage();
 if (! probeFile) throw 'No probe PDB file specified ! Usage : ' + usage();
 if (! ncpu) throw 'No number of CPUs specified ! Usage : ' + usage();
+if (! bean) throw 'No config file specified ! Usage : ' + usage();
+if (! bean.hasOwnProperty('cacheDir') && ! cacheDir) throw 'No cacheDir specified ! Usage : ' + usage();
 
 try { var probeContent = fs.readFileSync(probeFile, 'utf8'); }
 catch (err) { throw err; }
@@ -157,44 +155,33 @@ slurmOptions = {
     'port' : port
 }
 
-if (! b_emul) {
-    ///////////// jobManager /////////////
-    if (! bean) throw 'No config file specified ! Usage : ' + usage();
-    if (! bean.hasOwnProperty('cacheDir') && ! cacheDir) throw 'No cacheDir specified ! Usage : ' + usage();
-    bean.cacheDir = cacheDir ? cacheDir : bean.cacheDir;
-    slurmOptions['cacheDir'] = bean.cacheDir;
-    optCacheDir.push(bean.cacheDir);
+///////////// jobManager /////////////
+bean.cacheDir = cacheDir ? cacheDir : bean.cacheDir;
+slurmOptions['cacheDir'] = bean.cacheDir;
+optCacheDir.push(bean.cacheDir);
 
-    let jobManager = require ('nslurm'); // engineLayer branch
-    let jobProfile: string = "arwen_hex_" + ncpu + "cpu"; // "arwen_hex_16cpu" for example
-    let management: {} = {
-        'jobManager' : jobManager,
-        'jobProfile' : jobProfile
-    }
 
-    //jobManager.debugOn();
-    if (b_index) jobManager.index(optCacheDir);
-    else jobManager.index(null);
-
-    jobManager.configure({"engine" : engineType, "binaries" : bean.binaries });
-
-    jobManager.start(slurmOptions);
-    jobManager.on('exhausted', function (){
-        console.log("All jobs processed");
-    });
-    jobManager.on('ready', function () {
-    	hexTest(management, probeContent);
-        //multiple_hexTests(management, probeContent); // to detect errors
-    });
-} else {
-    ///////////// emulation /////////////
-    if (! cacheDir) throw 'No cacheDir specified ! Usage : ' + usage();
-    slurmOptions['cacheDir'] = cacheDir;
-    let management: {} = {
-        'emulate' : slurmOptions
-    }
-    hexTest(management, probeContent);
+let jobProfile: string = "arwen_hex_" + ncpu + "cpu"; // "arwen_hex_16cpu" for example
+let management: {} = {
+    'jobManager' : jobManager,
+    'jobProfile' : jobProfile
 }
+
+//jobManager.debugOn();
+if (b_index) jobManager.index(optCacheDir);
+else jobManager.index(null);
+
+jobManager.configure({"engine" : engineType, "binaries" : bean.binaries });
+
+jobManager.start(slurmOptions);
+jobManager.on('exhausted', function (){
+    console.log("All jobs processed");
+});
+jobManager.on('ready', function () {
+	hexTest(management, probeContent);
+    //multiple_hexTests(management, probeContent); // to detect errors
+});
+
 
 
 

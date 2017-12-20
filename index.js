@@ -18,7 +18,6 @@ The output is a literal with this form :
 Object.defineProperty(exports, "__esModule", { value: true });
 // TODO
 // - doc
-// - npm
 const tk = require("taskobject");
 class Hex extends tk.Task {
     /*

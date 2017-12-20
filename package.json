@@ -7,7 +7,7 @@
   "dependencies": {
     "jsonfile": "^3.0.0",
     "my-local-ip": "^1.0.0",
-    "nslurm": "^0.8.0",
+    "nslurm": "^1.1.1",
     "pdb-lib": "^2.0.6"
   },
   "main": "index.js",

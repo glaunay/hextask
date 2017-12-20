@@ -11,11 +11,12 @@ node path/to/this/script/test.js -cache /path/to/cache/tmp/
 */
 const hexT = require("../index");
 const localIP = require("my-local-ip");
+const jobManager = require("nslurm"); // engineLayer branch
 const jsonfile = require("jsonfile");
 const fs = require("fs");
 const pdbLib = require("pdb-lib");
 var tcp = localIP(), port = "2240";
-var engineType = null, cacheDir = null, bean = null, inputFile = null, probeFile = null, ncpu = null, b_index = false, b_emul = false, slurmOptions = null;
+var engineType = null, cacheDir = null, bean = null, inputFile = null, probeFile = null, ncpu = null, b_index = false, slurmOptions = null;
 var optCacheDir = [];
 //////////////// usage //////////////////
 var usage = function () {
@@ -30,7 +31,6 @@ var usage = function () {
     str += '    -probe [PATH_TO_YOUR_PROBE_FILE]\n';
     str += '    -ncpu [NUMBER OF CPUS NEEDED]\n';
     str += '    --index, to allow indexation of the cache directory of nslurm [optional]\n';
-    str += '    --emul, to run the test without any job manager [optional]\n\n';
     str += 'EXAMPLE :\n';
     str += 'node test/test.js\n';
     str += '    -cache /home/mgarnier/tmp/\n';
@@ -111,9 +111,6 @@ process.argv.forEach(function (val, index, array) {
     if (val === '--index') {
         b_index = true;
     }
-    if (val === '--emul') {
-        b_emul = true;
-    }
 });
 if (!inputFile)
     throw 'No PDB file specified ! Usage : ' + usage();
@@ -121,6 +118,10 @@ if (!probeFile)
     throw 'No probe PDB file specified ! Usage : ' + usage();
 if (!ncpu)
     throw 'No number of CPUs specified ! Usage : ' + usage();
+if (!bean)
+    throw 'No config file specified ! Usage : ' + usage();
+if (!bean.hasOwnProperty('cacheDir') && !cacheDir)
+    throw 'No cacheDir specified ! Usage : ' + usage();
 try {
     var probeContent = fs.readFileSync(probeFile, 'utf8');
 }
@@ -135,43 +136,26 @@ slurmOptions = {
     'tcp': tcp,
     'port': port
 };
-if (!b_emul) {
-    ///////////// jobManager /////////////
-    if (!bean)
-        throw 'No config file specified ! Usage : ' + usage();
-    if (!bean.hasOwnProperty('cacheDir') && !cacheDir)
-        throw 'No cacheDir specified ! Usage : ' + usage();
-    bean.cacheDir = cacheDir ? cacheDir : bean.cacheDir;
-    slurmOptions['cacheDir'] = bean.cacheDir;
-    optCacheDir.push(bean.cacheDir);
-    let jobManager = require('nslurm'); // engineLayer branch
-    let jobProfile = "arwen_hex_" + ncpu + "cpu"; // "arwen_hex_16cpu" for example
-    let management = {
-        'jobManager': jobManager,
-        'jobProfile': jobProfile
-    };
-    //jobManager.debugOn();
-    if (b_index)
-        jobManager.index(optCacheDir);
-    else
-        jobManager.index(null);
-    jobManager.configure({ "engine": engineType, "binaries": bean.binaries });
-    jobManager.start(slurmOptions);
-    jobManager.on('exhausted', function () {
-        console.log("All jobs processed");
-    });
-    jobManager.on('ready', function () {
-        hexTest(management, probeContent);
-        //multiple_hexTests(management, probeContent); // to detect errors
-    });
-}
-else {
-    ///////////// emulation /////////////
-    if (!cacheDir)
-        throw 'No cacheDir specified ! Usage : ' + usage();
-    slurmOptions['cacheDir'] = cacheDir;
-    let management = {
-        'emulate': slurmOptions
-    };
+///////////// jobManager /////////////
+bean.cacheDir = cacheDir ? cacheDir : bean.cacheDir;
+slurmOptions['cacheDir'] = bean.cacheDir;
+optCacheDir.push(bean.cacheDir);
+let jobProfile = "arwen_hex_" + ncpu + "cpu"; // "arwen_hex_16cpu" for example
+let management = {
+    'jobManager': jobManager,
+    'jobProfile': jobProfile
+};
+//jobManager.debugOn();
+if (b_index)
+    jobManager.index(optCacheDir);
+else
+    jobManager.index(null);
+jobManager.configure({ "engine": engineType, "binaries": bean.binaries });
+jobManager.start(slurmOptions);
+jobManager.on('exhausted', function () {
+    console.log("All jobs processed");
+});
+jobManager.on('ready', function () {
     hexTest(management, probeContent);
-}
+    //multiple_hexTests(management, probeContent); // to detect errors
+});

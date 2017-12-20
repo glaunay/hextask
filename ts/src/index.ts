@@ -19,7 +19,6 @@ The output is a literal with this form :
 
 // TODO
 // - doc
-// - npm
 
 
 import tk = require('taskobject');

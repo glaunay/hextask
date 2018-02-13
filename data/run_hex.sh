@@ -15,6 +15,7 @@ export HEX_FIRST_GPU=${CUDA_VISIBLE_DEVICES}
 SOURCEDIR=`pwd`
 cd $WORKDIR/
 
+
 # debug
 cp $targetPdbFile $SOURCEDIR
 
@@ -78,7 +79,7 @@ if [ `cat hex.log | grep "Docking done in a total of" | wc -l` -eq 0 ]
 fi
 
 #ls *.pdb
-cp hex.log $SOURCEDIR/
+[[ $PWD = $SOURCEDIR ]] || cp hex.log $SOURCEDIR
 
 ls pose_*.pdb > /dev/null
 if test $? -ne 0
@@ -97,17 +98,19 @@ else
         tag=${file%%.pdb}
         cmd="naccess $WORKDIR/$file";
         $cmd > /dev/null
-        cp $tag.rsa $SOURCEDIR
+        [[ $PWD = $SOURCEDIR ]] || cp $tag.rsa $SOURCEDIR
     # truncate pose accessibility file for target record only:
         #echo "head -$NB $WORKDIR/$tag.rsa > $WORKDIR/temp.rsa "
         grep "^RES" $WORKDIR/$tag.rsa | head -$NB > $WORKDIR/temp.rsa
     #extract interface: residues with accessiblity change, i.e., differences in the accessibility file
         diff temp.rsa $rsaFree | grep "> RES"  | cut -c 11-16  >> $WORKDIR/interface_index.temp
     done
-    cp *.pdb $SOURCEDIR
-    cp *.asa $SOURCEDIR
-    cp *.rsa $SOURCEDIR
-    cp interface_index.temp $SOURCEDIR
+
+    # cp of files if they do not exist
+    [[ $PWD = $SOURCEDIR ]] || cp *.pdb $SOURCEDIR
+    [[ $PWD = $SOURCEDIR ]] || cp *.asa $SOURCEDIR
+    [[ $PWD = $SOURCEDIR ]] || cp *.rsa $SOURCEDIR
+    [[ $PWD = $SOURCEDIR ]] || cp interface_index.temp $SOURCEDIR
 # count residues
     #cat $WORKDIR/interface_index.temp | sort | uniq -c | awk '{print substr($0,9,6)","substr($0,0,7)}' > $SOURCEDIR/nb_hits.data
 # Docking done in a total of

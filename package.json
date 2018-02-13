@@ -7,8 +7,9 @@
   "dependencies": {
     "jsonfile": "^3.0.0",
     "my-local-ip": "^1.0.0",
-    "nslurm": "^1.1.1",
-    "pdb-lib": "^2.0.6"
+    "nslurm": "^1.1.4",
+    "pdb-lib": "^2.0.6",
+    "taskobject": "^0.1.3"
   },
   "main": "index.js",
   "directories": {

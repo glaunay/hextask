@@ -23,18 +23,19 @@ class Hex extends tk.Task {
     /*
     * Initialize the task parameters.
     */
-    constructor(management, syncMode, options) {
-        super(management, syncMode, options);
+    constructor(management, options) {
+        super(management, options);
         this.rootdir = __dirname;
         this.settFile = this.rootdir + '/data/settings.json';
-        super.init(this.settFile);
         this.staticTag = 'hex';
+        /* Creation of the slot symbols : only one here */
+        this.slotSymbols = ['targetPdbFile', 'probePdbFile'];
+        super.init(this.settFile);
     }
     /*
     * Here manage the input(s)
     */
     prepareJob(inputs) {
-        inputs.push(this.staticInputs);
         return super.configJob(inputs);
     }
     /*

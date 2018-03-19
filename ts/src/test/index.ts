@@ -14,28 +14,28 @@ import pdbLib = require ('pdb-lib');
 
 
 
-export var hexTest = function (inputFile, management, probe, ncpu) {
-    let syncMode: boolean = false;
-
+export var hexTest = function (inputFile, management, probeFile, ncpu) {
     var hexOptions = {
-        'staticInputs' : { 'probePdbFile' : probe },
         'modules' : ['naccess', 'hex'],
         'exportVar' : { 'hexFlags' : ' -nocuda -ncpu ' + ncpu + ' ',
                         'hexScript' : '/software/mobi/hex/8.1.1/exe/hex8.1.1.x64' }
     };
-    var h = new hexT.Hex(management, syncMode, hexOptions);
-    //h.testMode(true);
+    var h = new hexT.Hex(management, hexOptions);
 
-    pdbLib.parse({ 'file' : inputFile}).on('end', function (pdbObj) {
-        pdbObj.stream(true, "targetPdbFile").pipe(h);
-        //process.stdin.pipe(h);
-        h.on('processed', function (results) {
-            console.log('**** data H');
-        })
-        .on('err', function (err, jobID) {
-            console.log('**** ERROR H');
-        })
-        //.pipe(process.stdout);
+    pdbLib.parse({ 'file' : probeFile}).on('end', function (pdbObj) { // read the probeFile
+        pdbObj.stream(true, "probePdbFile").pipe(h.probePdbFile);
+
+        pdbLib.parse({ 'file' : inputFile}).on('end', function (pdbObj) { // read the targetPdbFile
+            pdbObj.stream(true, "targetPdbFile").pipe(h.targetPdbFile);
+
+            h.on('processed', function (results) {
+                console.log('**** data H');
+            })
+            .on('err', function (err, jobID) {
+                console.log('**** ERROR H');
+            })
+            .pipe(process.stdout);
+        });
     });
 }
 

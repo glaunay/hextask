@@ -11,26 +11,25 @@ const jobManager = require("nslurm");
 const hexT = require("../index");
 const localIP = require("my-local-ip");
 const pdbLib = require("pdb-lib");
-exports.hexTest = function (inputFile, management, probe, ncpu) {
-    let syncMode = false;
+exports.hexTest = function (inputFile, management, probeFile, ncpu) {
     var hexOptions = {
-        'staticInputs': { 'probePdbFile': probe },
         'modules': ['naccess', 'hex'],
         'exportVar': { 'hexFlags': ' -nocuda -ncpu ' + ncpu + ' ',
             'hexScript': '/software/mobi/hex/8.1.1/exe/hex8.1.1.x64' }
     };
-    var h = new hexT.Hex(management, syncMode, hexOptions);
-    //h.testMode(true);
-    pdbLib.parse({ 'file': inputFile }).on('end', function (pdbObj) {
-        pdbObj.stream(true, "targetPdbFile").pipe(h);
-        //process.stdin.pipe(h);
-        h.on('processed', function (results) {
-            console.log('**** data H');
-        })
-            .on('err', function (err, jobID) {
-            console.log('**** ERROR H');
+    var h = new hexT.Hex(management, hexOptions);
+    pdbLib.parse({ 'file': probeFile }).on('end', function (pdbObj) {
+        pdbObj.stream(true, "probePdbFile").pipe(h.probePdbFile);
+        pdbLib.parse({ 'file': inputFile }).on('end', function (pdbObj) {
+            pdbObj.stream(true, "targetPdbFile").pipe(h.targetPdbFile);
+            h.on('processed', function (results) {
+                console.log('**** data H');
+            })
+                .on('err', function (err, jobID) {
+                console.log('**** ERROR H');
+            })
+                .pipe(process.stdout);
         });
-        //.pipe(process.stdout);
     });
 };
 exports.multiple_hexTests = function (inputFile, management, probe, ncpu) {

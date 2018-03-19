@@ -26,22 +26,28 @@ import tk = require('taskobject');
 declare var __dirname;
 
 export class Hex extends tk.Task {
+    public targetPdbFile;
+    public probePdbFile;
+
 	/*
 	* Initialize the task parameters.
 	*/
-	constructor (management: {}, syncMode: boolean, options?: any) {
-		super(management, syncMode, options);
+	constructor (management: {}, options?: any) {
+        super(management, options);
         this.rootdir = __dirname;
         this.settFile = this.rootdir + '/data/settings.json';
-        super.init(this.settFile);
         this.staticTag = 'hex';
+
+        /* Creation of the slot symbols : only one here */
+        this.slotSymbols = ['targetPdbFile', 'probePdbFile'];
+
+        super.init(this.settFile);
     }
 
     /*
     * Here manage the input(s)
     */
     prepareJob (inputs: any[]): any {
-        inputs.push(this.staticInputs);
         return super.configJob(inputs);
     }
 

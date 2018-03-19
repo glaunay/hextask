@@ -27,7 +27,7 @@ class Hex extends tk.Task {
         super(management, options);
         this.rootdir = __dirname;
         this.settFile = this.rootdir + '/data/settings.json';
-        this.staticTag = 'hex';
+        this.staticTag = 'hextask';
         /* Creation of the slot symbols : only one here */
         this.slotSymbols = ['targetPdbFile', 'probePdbFile'];
         super.init(this.settFile);

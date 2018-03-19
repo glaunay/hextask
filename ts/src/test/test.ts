@@ -34,7 +34,7 @@ var usage = function (): void {
     str += '      -c ./node_modules/nslurm/config/arwenConf.json\n';
     str += '      -f ./test/1BRS.pdb\n';
     str += '      -p ./test/probe.pdb\n';
-    str += '      -ncpu 16\n\n'
+    str += '      -n 16\n\n'
     console.log(str);
 }
 

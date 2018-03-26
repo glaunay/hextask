@@ -10,7 +10,7 @@
     "my-local-ip": "^1.0.0",
     "nslurm": "^1.1.4",
     "pdb-lib": "^2.0.6",
-    "taskobject": "^1.0.7"
+    "taskobject": "^1.1.0"
   },
   "main": "index.js",
   "directories": {

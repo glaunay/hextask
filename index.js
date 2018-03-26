@@ -26,11 +26,11 @@ class Hex extends tk.Task {
     constructor(management, options) {
         super(management, options);
         this.rootdir = __dirname;
-        this.settFile = this.rootdir + '/data/settings.json';
+        this.coreScript = this.rootdir + '/data/run_hex.sh';
         this.staticTag = 'hextask';
         /* Creation of the slot symbols : only one here */
         this.slotSymbols = ['targetPdbFile', 'probePdbFile'];
-        super.init(this.settFile);
+        super.initSlots();
     }
     /*
     * Here manage the input(s)

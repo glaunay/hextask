@@ -27,7 +27,6 @@ class hextask extends tk.Task {
         super(management, options);
         this.rootdir = __dirname;
         this.coreScript = this.rootdir + '/data/run_hex.sh';
-        this.staticTag = 'hextask';
         /* Creation of the slot symbols : only one here */
         this.slotSymbols = ['targetPdbFile', 'probePdbFile'];
         super.initSlots();

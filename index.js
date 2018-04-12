@@ -19,7 +19,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // TODO
 // - doc
 const tk = require("taskobject");
-class Hex extends tk.Task {
+class hextask extends tk.Task {
     /*
     * Initialize the task parameters.
     */
@@ -46,4 +46,4 @@ class Hex extends tk.Task {
         return results;
     }
 }
-exports.Hex = Hex;
+exports.hextask = hextask;

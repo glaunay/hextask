@@ -20,7 +20,7 @@ export var hexTest = function (inputFile, management, probeFile, ncpu) {
         'exportVar' : { 'hexFlags' : ' -nocuda -ncpu ' + ncpu + ' ',
                         'hexScript' : '/software/mobi/hex/8.1.1/exe/hex8.1.1.x64' }
     };
-    var h = new hexT.Hex(management, hexOptions);
+    var h = new hexT.hextask(management, hexOptions);
 
     pdbLib.parse({ 'file' : probeFile}).on('end', function (pdbObj) { // read the probeFile
         pdbObj.stream(true, "probePdbFile").pipe(h.probePdbFile);

@@ -25,7 +25,7 @@ import tk = require('taskobject');
 
 declare var __dirname;
 
-export class Hex extends tk.Task {
+export class hextask extends tk.Task {
     public targetPdbFile;
     public probePdbFile;
 

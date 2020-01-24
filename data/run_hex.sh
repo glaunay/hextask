@@ -107,9 +107,10 @@ else
     done
 
     # cp of files if they do not exist
-    [[ $PWD = $SOURCEDIR ]] || cp *.pdb $SOURCEDIR
-    [[ $PWD = $SOURCEDIR ]] || cp *.asa $SOURCEDIR
-    [[ $PWD = $SOURCEDIR ]] || cp *.rsa $SOURCEDIR
+    # Do not copy to minimize disk usage
+   # [[ $PWD = $SOURCEDIR ]] || cp *.pdb $SOURCEDIR
+   # [[ $PWD = $SOURCEDIR ]] || cp *.asa $SOURCEDIR
+   # [[ $PWD = $SOURCEDIR ]] || cp *.rsa $SOURCEDIR
     [[ $PWD = $SOURCEDIR ]] || cp interface_index.temp $SOURCEDIR
 # count residues
     #cat $WORKDIR/interface_index.temp | sort | uniq -c | awk '{print substr($0,9,6)","substr($0,0,7)}' > $SOURCEDIR/nb_hits.data
